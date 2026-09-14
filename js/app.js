@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 1. INICIALIZAR SIMULADOR BA II PLUS
   const baiiCalc = new BAIIPlusCalculator();
 
-  function updateBaiiUI() {
+  function updateBaiiUI(stepReason = null) {
     const lcdDisplay = document.getElementById('lcd-display');
     const lcd2nd = document.getElementById('lcd-2nd');
     const lcdCpt = document.getElementById('lcd-cpt');
@@ -16,14 +16,143 @@ document.addEventListener('DOMContentLoaded', () => {
     lcd2nd.style.opacity = baiiCalc.is2ndActive ? "1" : "0.2";
     lcdCpt.style.opacity = baiiCalc.isCptActive ? "1" : "0.2";
 
-    // Monitor State
-    document.getElementById('tvm-val-n').innerText = baiiCalc.N.toFixed(2);
-    document.getElementById('tvm-val-iy').innerText = `${baiiCalc.IY.toFixed(2)}%`;
-    document.getElementById('tvm-val-pv').innerText = FinMath.formatMoney(baiiCalc.PV);
-    document.getElementById('tvm-val-pmt').innerText = FinMath.formatMoney(baiiCalc.PMT);
-    document.getElementById('tvm-val-fv').innerText = FinMath.formatMoney(baiiCalc.FV);
-    document.getElementById('tvm-val-cy').innerText = baiiCalc.CY;
+    // Actualizar campos del panel rápido (sin sobrescribir si el usuario está escribiendo)
+    const activeEl = document.activeElement;
+    if (activeEl?.id !== 'quick-n') document.getElementById('quick-n').value = baiiCalc.N ? baiiCalc.N.toFixed(4) : '';
+    if (activeEl?.id !== 'quick-t') document.getElementById('quick-t').value = (baiiCalc.CY && baiiCalc.N) ? (baiiCalc.N / baiiCalc.CY).toFixed(4) : '';
+    if (activeEl?.id !== 'quick-iy') document.getElementById('quick-iy').value = baiiCalc.IY ? baiiCalc.IY.toFixed(4) : '';
+    if (activeEl?.id !== 'quick-pv') document.getElementById('quick-pv').value = baiiCalc.PV ? Math.abs(baiiCalc.PV).toFixed(2) : '';
+    if (activeEl?.id !== 'quick-fv') document.getElementById('quick-fv').value = baiiCalc.FV ? Math.abs(baiiCalc.FV).toFixed(2) : '';
+    if (activeEl?.id !== 'quick-cy' && baiiCalc.CY) document.getElementById('quick-cy').value = baiiCalc.CY;
+
+    // Calcular valores secundarios para el resumen
+    const cy = baiiCalc.CY || 1;
+    const iPct = (baiiCalc.IY / cy);
+    const iDec = iPct / 100;
+    const interest = Math.abs(baiiCalc.FV) - Math.abs(baiiCalc.PV);
+
+    document.getElementById('tvm-val-i').innerText = `${iPct.toFixed(4)}% ${cy === 12 ? 'mensual' : cy === 4 ? 'trimestral' : cy === 2 ? 'semestral' : 'periódica'}`;
+    document.getElementById('tvm-val-interest').innerText = FinMath.formatMoney(interest > 0 ? interest : 0);
+
+    // Generar explicación matemática paso a paso si hay datos
+    renderTvmSteps(stepReason);
   }
+
+  function renderTvmSteps(targetVar = null) {
+    const stepsContainer = document.getElementById('tvm-steps-detail');
+    if (!stepsContainer) return;
+
+    const cy = baiiCalc.CY || 12;
+    const iy = baiiCalc.IY || 0;
+    const t = (baiiCalc.N && cy) ? (baiiCalc.N / cy) : 0;
+    const N = baiiCalc.N || 0;
+    const pv = Math.abs(baiiCalc.PV || 0);
+    const fv = Math.abs(baiiCalc.FV || 0);
+    const iPct = iy / cy;
+    const iDec = iPct / 100;
+
+    let html = `
+      <div style="font-family: var(--font-mono); margin-bottom: 8px;">
+        <strong>Fórmula de Valor Futuro:</strong><br>
+        <span style="color:#38bdf8;">VF = VP × (1 + I/Y / C/Y)^(C/Y × t)</span>
+      </div>
+      <div class="step-item">
+        <div class="step-title">Paso 1: Tasa de Interés por Período (i):</div>
+        <div class="step-formula">i = (I/Y) / C/Y = ${iy}% / ${cy} = ${iPct.toFixed(4)}% = ${iDec.toFixed(6)}</div>
+      </div>
+      <div class="step-item">
+        <div class="step-title">Paso 2: Número Total de Períodos (N):</div>
+        <div class="step-formula">N = C/Y × t = ${cy} × ${t.toFixed(2)} años = ${N.toFixed(2)} períodos</div>
+      </div>
+    `;
+
+    if (targetVar === 'FV' || fv > 0) {
+      html += `
+        <div class="step-item">
+          <div class="step-title">Paso 3: Calcular el Valor Futuro (VF):</div>
+          <div class="step-formula">VF = ${FinMath.formatMoney(pv)} × (1 + ${iDec.toFixed(6)})^${N.toFixed(2)} = <strong>${FinMath.formatMoney(fv)}</strong></div>
+        </div>
+      `;
+    } else if (targetVar === 'PV') {
+      html += `
+        <div class="step-item">
+          <div class="step-title">Paso 3: Calcular el Valor Presente (VP):</div>
+          <div class="step-formula">VP = ${FinMath.formatMoney(fv)} / (1 + ${iDec.toFixed(6)})^${N.toFixed(2)} = <strong>${FinMath.formatMoney(pv)}</strong></div>
+        </div>
+      `;
+    } else if (targetVar === 'N') {
+      html += `
+        <div class="step-item">
+          <div class="step-title">Paso 3: Calcular el Número de Períodos (N):</div>
+          <div class="step-formula">N = ln(${FinMath.formatMoney(fv)} / ${FinMath.formatMoney(pv)}) / ln(1 + ${iDec.toFixed(6)}) = <strong>${N.toFixed(4)}</strong> (${t.toFixed(2)} años)</div>
+        </div>
+      `;
+    } else if (targetVar === 'IY') {
+      html += `
+        <div class="step-item">
+          <div class="step-title">Paso 3: Calcular Tasa Nominal (I/Y):</div>
+          <div class="step-formula">I/Y = C/Y × [(${FinMath.formatMoney(fv)} / ${FinMath.formatMoney(pv)})^(1/${N.toFixed(2)}) - 1] = <strong>${iy.toFixed(4)}%</strong></div>
+        </div>
+      `;
+    }
+
+    stepsContainer.innerHTML = html;
+  }
+
+  // Event Listeners para Inputs Rápidos
+  document.getElementById('quick-cy')?.addEventListener('change', (e) => {
+    baiiCalc.setFrequency(e.target.value);
+    updateBaiiUI();
+  });
+
+  document.getElementById('quick-t')?.addEventListener('input', (e) => {
+    const years = parseFloat(e.target.value) || 0;
+    baiiCalc.N = years * (baiiCalc.CY || 12);
+    updateBaiiUI();
+  });
+
+  document.getElementById('quick-n')?.addEventListener('input', (e) => {
+    baiiCalc.N = parseFloat(e.target.value) || 0;
+    updateBaiiUI();
+  });
+
+  document.getElementById('quick-iy')?.addEventListener('input', (e) => {
+    baiiCalc.IY = parseFloat(e.target.value) || 0;
+    updateBaiiUI();
+  });
+
+  document.getElementById('quick-pv')?.addEventListener('input', (e) => {
+    const val = parseFloat(e.target.value) || 0;
+    baiiCalc.PV = -Math.abs(val);
+    updateBaiiUI();
+  });
+
+  document.getElementById('quick-fv')?.addEventListener('input', (e) => {
+    baiiCalc.FV = parseFloat(e.target.value) || 0;
+    updateBaiiUI();
+  });
+
+  // Botones de CPT Rápidos
+  document.getElementById('btn-quick-cpt-fv')?.addEventListener('click', () => {
+    baiiCalc.computeVariable('FV');
+    updateBaiiUI('FV');
+  });
+
+  document.getElementById('btn-quick-cpt-pv')?.addEventListener('click', () => {
+    baiiCalc.computeVariable('PV');
+    updateBaiiUI('PV');
+  });
+
+  document.getElementById('btn-quick-cpt-iy')?.addEventListener('click', () => {
+    baiiCalc.computeVariable('IY');
+    updateBaiiUI('IY');
+  });
+
+  document.getElementById('btn-quick-cpt-n')?.addEventListener('click', () => {
+    baiiCalc.computeVariable('N');
+    updateBaiiUI('N');
+  });
+
 
   // Teclado BA II Plus
   document.querySelectorAll('.num-btn').forEach(btn => {

@@ -137,47 +137,86 @@
           </div>
         </div>
 
-        <!-- TVM STATE MONITOR -->
+        <!-- TVM STATE MONITOR & DIRECT CONTROLS -->
         <div class="glass-card">
           <div class="section-header">
-            <h2><i class="fa-solid fa-list-check"></i> Estado de la Hoja TVM</h2>
-            <p>Valores almacenados en memoria y guía de uso</p>
+            <h2><i class="fa-solid fa-list-check"></i> Estado y Edición Rápida TVM</h2>
+            <p>Ingrese valores numéricos directamente o use el teclado virtual</p>
           </div>
 
-          <div class="result-breakdown" style="font-size: 1rem; border-top: none;">
-            <div class="result-breakdown-row">
-              <span>Períodos de Capitalización (N):</span>
-              <span class="val" id="tvm-val-n">0.00</span>
+          <div class="tvm-quick-form" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Frecuencia (C/Y = P/Y)</label>
+              <select id="quick-cy" class="form-control">
+                <option value="1">Anual (C/Y = 1)</option>
+                <option value="2">Semestral (C/Y = 2)</option>
+                <option value="4">Trimestral (C/Y = 4)</option>
+                <option value="12" selected>Mensual (C/Y = 12)</option>
+                <option value="365">Diario (C/Y = 365)</option>
+              </select>
             </div>
-            <div class="result-breakdown-row">
-              <span>Tasa Nominal Anual (I/Y):</span>
-              <span class="val" id="tvm-val-iy">0.00%</span>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Plazo en Años (t)</label>
+              <div class="input-wrapper">
+                <input type="number" step="any" id="quick-t" class="form-control" placeholder="Ej: 5">
+                <span class="input-unit">años</span>
+              </div>
             </div>
-            <div class="result-breakdown-row">
-              <span>Valor Presente (PV) [Salida = -]:</span>
-              <span class="val" id="tvm-val-pv">$0.00</span>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Períodos (N)</label>
+              <input type="number" step="any" id="quick-n" class="form-control" placeholder="Ej: 60">
             </div>
-            <div class="result-breakdown-row">
-              <span>Pago Periódico (PMT):</span>
-              <span class="val" id="tvm-val-pmt">$0.00</span>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Tasa Nominal (I/Y)</label>
+              <div class="input-wrapper">
+                <input type="number" step="any" id="quick-iy" class="form-control" placeholder="Ej: 6.9">
+                <span class="input-unit">%</span>
+              </div>
             </div>
-            <div class="result-breakdown-row">
-              <span>Valor Futuro (FV) [Entrada = +]:</span>
-              <span class="val" id="tvm-val-fv">$0.00</span>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Valor Presente (PV)</label>
+              <div class="input-wrapper">
+                <input type="number" step="any" id="quick-pv" class="form-control" placeholder="Ej: 25000">
+                <span class="input-unit">$</span>
+              </div>
             </div>
-            <div class="result-breakdown-row">
-              <span>Frecuencia Anual (P/Y = C/Y):</span>
-              <span class="val" id="tvm-val-cy">1</span>
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Valor Futuro (FV)</label>
+              <div class="input-wrapper">
+                <input type="number" step="any" id="quick-fv" class="form-control" placeholder="Ej: 35263.14">
+                <span class="input-unit">$</span>
+              </div>
             </div>
           </div>
 
-          <div class="steps-container" style="margin-top: 24px;">
-            <div class="step-title"><i class="fa-solid fa-circle-info"></i> Instrucciones de Operación:</div>
-            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 8px;">
-              1. Escriba un número en la calculadora y presione <strong>N, I/Y, PV o FV</strong> para guardar.<br>
-              2. Para calcular una incógnita: Presione <span style="color:#0284c7; font-weight:bold;">CPT</span> y luego la tecla deseada (ej. <span style="color:#3b82f6; font-weight:bold;">FV</span>).<br>
-              3. Para borrar memoria TVM: Presione <span style="color:#f59e0b; font-weight:bold;">2ND</span> y luego <span style="color:#3b82f6; font-weight:bold;">FV</span> (CLR TVM).
-            </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;">
+            <button class="btn btn-primary" id="btn-quick-cpt-fv"><i class="fa-solid fa-calculator"></i> Calcular FV</button>
+            <button class="btn btn-primary" id="btn-quick-cpt-pv"><i class="fa-solid fa-calculator"></i> Calcular PV</button>
+            <button class="btn btn-secondary" id="btn-quick-cpt-iy"><i class="fa-solid fa-percent"></i> Calcular I/Y</button>
+            <button class="btn btn-secondary" id="btn-quick-cpt-n"><i class="fa-solid fa-clock"></i> Calcular N</button>
+          </div>
+
+          <div class="result-breakdown" style="font-size: 0.92rem;">
+            <div class="result-breakdown-row">
+              <span>Tasa Periódica (i = I/Y / C/Y):</span>
+              <span class="val" id="tvm-val-i">0.00%</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Monto Interés Compuesto (I):</span>
+              <span class="val" id="tvm-val-interest">$0.00</span>
+            </div>
+          </div>
+
+          <div id="tvm-live-steps" class="steps-container" style="margin-top: 16px;">
+            <div class="step-title"><i class="fa-solid fa-square-root-variable"></i> Solución Paso a Paso:</div>
+            <div id="tvm-steps-detail" style="margin-top: 6px; font-size: 0.88rem; color: var(--text-muted);">
+              Modifique los valores o presione uno de los botones para ver el desarrollo paso a paso del ejercicio.
+            </div>
           </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ class BAIIPlusCalculator {
     this.currentInput = "0";
     this.is2ndActive = false;
     this.isCptActive = false;
-    this.activeWorksheet = "TVM"; // TVM, ICONV, DATE
+    this.activeWorksheet = "TVM";
     this.displayMessage = "READY";
   }
 
@@ -63,6 +63,16 @@ class BAIIPlusCalculator {
     this.isCptActive = true;
   }
 
+  // Asignar C/Y y P/Y
+  setFrequency(val) {
+    const freq = parseFloat(val) || 12;
+    this.PY = freq;
+    this.CY = freq;
+    this.displayMessage = `P/Y=C/Y=${freq}`;
+    this.currentInput = "0";
+    this.is2ndActive = false;
+  }
+
   // Asignar o Calcular variable TVM
   handleTVMKey(key) {
     const val = parseFloat(this.currentInput);
@@ -74,15 +84,25 @@ class BAIIPlusCalculator {
         this.is2ndActive = false;
         return;
       }
-      if (key === 'IY') {
+      if (key === 'IY' || key === 'PY' || key === 'CY') {
         // 2ND + I/Y = P/Y y C/Y
-        this.PY = val || 12;
-        this.CY = val || 12;
-        this.displayMessage = `P/Y=C/Y=${this.CY}`;
-        this.is2ndActive = false;
-        this.currentInput = "0";
+        this.setFrequency(val || 12);
         return;
       }
+      if (key === 'N') {
+        // 2ND + N = XP/Y (Multiplicar años ingresados por P/Y para obtener N)
+        const years = val || 0;
+        this.N = years * this.CY;
+        this.displayMessage = `N = ${this.N}`;
+        this.currentInput = "0";
+        this.is2ndActive = false;
+        return;
+      }
+    }
+
+    if (key === 'PY' || key === 'CY') {
+      this.setFrequency(val || 12);
+      return;
     }
 
     if (this.isCptActive) {
@@ -119,13 +139,14 @@ class BAIIPlusCalculator {
   }
 
   computeVariable(key) {
-    const i = (this.IY / 100) / this.CY;
+    const i = (this.IY / 100) / (this.CY || 1);
 
     switch (key) {
       case 'FV': {
         // FV = -PV * (1 + i)^N
         // Con convención de signos: Inversión PV < 0 => FV > 0
-        const fvCalc = -this.PV * Math.pow(1 + i, this.N);
+        const absPv = Math.abs(this.PV);
+        const fvCalc = absPv * Math.pow(1 + i, this.N);
         this.FV = fvCalc;
         this.currentInput = fvCalc.toFixed(4);
         this.displayMessage = `FV = ${fvCalc.toFixed(2)}`;
@@ -133,14 +154,15 @@ class BAIIPlusCalculator {
       }
       case 'PV': {
         // PV = -FV / (1 + i)^N
-        const pvCalc = -this.FV / Math.pow(1 + i, this.N);
+        const absFv = Math.abs(this.FV);
+        const pvCalc = - (absFv / Math.pow(1 + i, this.N));
         this.PV = pvCalc;
         this.currentInput = pvCalc.toFixed(4);
         this.displayMessage = `PV = ${pvCalc.toFixed(2)}`;
         break;
       }
       case 'N': {
-        // N = ln(-FV / PV) / ln(1 + i)
+        // N = ln(|FV / PV|) / ln(1 + i)
         const ratio = Math.abs(this.FV / this.PV);
         const nCalc = Math.log(ratio) / Math.log(1 + i);
         this.N = nCalc;
