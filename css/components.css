@@ -1,0 +1,237 @@
+/* -------------------------------------------------------------------
+   BA II PLUS FINANCIAL CALCULATOR & SPECIALIZED COMPONENTS
+   ------------------------------------------------------------------- */
+
+.baii-calculator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 0;
+}
+
+.baii-body {
+  width: 360px;
+  background: linear-gradient(180deg, #2a2e39 0%, #171920 100%);
+  border: 2px solid #4a5162;
+  border-radius: 28px;
+  padding: 24px 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.15);
+}
+
+.baii-header {
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.baii-logo {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+  color: #e2e8f0;
+}
+
+.baii-logo span {
+  color: #38bdf8;
+  font-size: 0.85rem;
+}
+
+/* Screen LCD Display */
+.baii-screen {
+  background: #9ab392;
+  border: 4px solid #1a1d24;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-family: 'Segment7Standard', var(--font-mono);
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.baii-indicators {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #273e2b;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.baii-display-text {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0d1e12;
+  text-align: right;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Keypad Grid */
+.keypad-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.baii-btn {
+  background: linear-gradient(180deg, #475569 0%, #334155 100%);
+  border: 1px solid #64748b;
+  border-radius: 6px;
+  color: #f8fafc;
+  padding: 10px 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #1e293b, 0 4px 6px rgba(0,0,0,0.3);
+  transition: all 0.1s ease;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.baii-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #1e293b;
+}
+
+.baii-btn-2nd {
+  background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
+  border-color: #fbbf24;
+  color: #0f172a;
+}
+
+.baii-btn-cpt {
+  background: linear-gradient(180deg, #0284c7 0%, #0369a1 100%);
+  border-color: #38bdf8;
+}
+
+.baii-btn-tvm {
+  background: linear-gradient(180deg, #3b82f6 0%, #1d4ed8 100%);
+  border-color: #93c5fd;
+}
+
+.baii-btn-action {
+  background: linear-gradient(180deg, #ef4444 0%, #b91c1c 100%);
+  border-color: #fca5a5;
+}
+
+.second-label {
+  font-size: 0.65rem;
+  color: #f59e0b;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+/* Sub-calculator Tabs */
+.sub-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 8px;
+}
+
+.sub-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--card-border);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sub-tab:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sub-tab.active {
+  background: var(--accent-gold);
+  color: #0f172a;
+  font-weight: 700;
+  border-color: var(--accent-gold);
+}
+
+/* Exercises Accordion / List */
+.exercise-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+}
+
+.exercise-card:hover {
+  border-color: var(--accent-gold);
+}
+
+.exercise-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.exercise-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent-gold);
+}
+
+.exercise-question {
+  color: #e2e8f0;
+  font-size: 0.92rem;
+  margin-bottom: 14px;
+  line-height: 1.5;
+}
+
+.exercise-answers {
+  background: rgba(15, 23, 42, 0.7);
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border-left: 3px solid var(--accent-cyan);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  color: #38bdf8;
+}
+
+/* Glossary items */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.glossary-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--card-border);
+  padding: 16px;
+  border-radius: var(--radius-md);
+}
+
+.glossary-symbol {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--accent-gold);
+  font-size: 1.1rem;
+}
+
+.glossary-title {
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.glossary-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}

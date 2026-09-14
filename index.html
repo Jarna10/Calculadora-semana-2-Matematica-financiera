@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Matemática Financiera - Interés Compuesto | UNMSM</title>
+  <meta name="description" content="Calculadora interactiva de Interés Compuesto basada en el silabo de Matemática Financiera de la Universidad Nacional Mayor de San Marcos (UNMSM).">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Chart.js for graphs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- HEADER BRANDING UNMSM -->
+    <header class="app-header">
+      <div class="brand-wrapper">
+        <div class="brand-badge">
+          <i class="fa-solid fa-calculator"></i>
+        </div>
+        <div class="brand-text">
+          <h1>Matemática Financiera: Interés Compuesto</h1>
+          <p>Rojas Nuñez Jefry Aldair - FCM UNMSM - EP matemática pura</p>
+        </div>
+      </div>
+      <div class="university-tag">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>UNMSM - Decana de América</span>
+      </div>
+    </header>
+
+    <!-- NAVEGACIÓN PRINCIPAL -->
+    <nav class="main-nav">
+      <button class="nav-tab active" data-tab="tab-baii">
+        <i class="fa-solid fa-calculator"></i> Simulador BA II Plus
+      </button>
+      <button class="nav-tab" data-tab="tab-solvers">
+        <i class="fa-solid fa-sliders"></i> Calculadoras Especializadas
+      </button>
+      <button class="nav-tab" data-tab="tab-chart">
+        <i class="fa-solid fa-chart-line"></i> Comparador Gráfico
+      </button>
+      <button class="nav-tab" data-tab="tab-exercises">
+        <i class="fa-solid fa-book-open"></i> Ejercicios Resueltos UNMSM
+      </button>
+      <button class="nav-tab" data-tab="tab-glossary">
+        <i class="fa-solid fa-bookmark"></i> Glosario y Fórmulas
+      </button>
+    </nav>
+
+    <!-- PESTAÑA 1: SIMULADOR BA II PLUS -->
+    <div id="tab-baii" class="tab-content active">
+      <div class="grid-2">
+        <!-- VIRTUAL CALCULATOR -->
+        <div class="glass-card">
+          <div class="section-header">
+            <h2><i class="fa-solid fa-mobile-screen"></i> Texas Instruments BA II Plus</h2>
+            <p>Hoja de trabajo del Valor Temporal del Dinero (TVM Worksheet)</p>
+          </div>
+          
+          <div class="baii-calculator-container">
+            <div class="baii-body">
+              <div class="baii-header">
+                <div class="baii-logo">BA II Plus <span>TEXAS INSTRUMENTS</span></div>
+              </div>
+              
+              <!-- PANTALLA LCD -->
+              <div class="baii-screen">
+                <div class="baii-indicators">
+                  <span id="lcd-2nd">2ND</span>
+                  <span id="lcd-cpt">CPT</span>
+                  <span id="lcd-mode">TVM</span>
+                </div>
+                <div id="lcd-display" class="baii-display-text">0.00</div>
+              </div>
+
+              <!-- TECLADO -->
+              <div class="baii-keypad">
+                <!-- FILA 1 -->
+                <div class="keypad-row">
+                  <button class="baii-btn baii-btn-cpt" id="btn-cpt"><span class="second-label">CPT</span>COMPUTE</button>
+                  <button class="baii-btn baii-btn-2nd" id="btn-2nd"><span class="second-label">2ND</span>FUNCTION</button>
+                  <button class="baii-btn" id="btn-py"><span class="second-label">P/Y</span>P/Y</button>
+                  <button class="baii-btn" id="btn-cy"><span class="second-label">C/Y</span>C/Y</button>
+                  <button class="baii-btn baii-btn-action" id="btn-ce"><span class="second-label">CLR</span>CE/C</button>
+                </div>
+
+                <!-- FILA 2 (TVM KEYS) -->
+                <div class="keypad-row">
+                  <button class="baii-btn baii-btn-tvm" id="btn-n"><span class="second-label">XP/Y</span>N</button>
+                  <button class="baii-btn baii-btn-tvm" id="btn-iy"><span class="second-label">P/Y</span>I/Y</button>
+                  <button class="baii-btn baii-btn-tvm" id="btn-pv"><span class="second-label">AMORT</span>PV</button>
+                  <button class="baii-btn baii-btn-tvm" id="btn-pmt"><span class="second-label">BGN</span>PMT</button>
+                  <button class="baii-btn baii-btn-tvm" id="btn-fv"><span class="second-label">CLR TVM</span>FV</button>
+                </div>
+
+                <!-- NUMERIC KEYPAD -->
+                <div class="keypad-row">
+                  <button class="baii-btn num-btn" data-val="7">7</button>
+                  <button class="baii-btn num-btn" data-val="8">8</button>
+                  <button class="baii-btn num-btn" data-val="9">9</button>
+                  <button class="baii-btn action-btn" id="btn-divide">÷</button>
+                  <button class="baii-btn action-btn" id="btn-multiply">×</button>
+                </div>
+                <div class="keypad-row">
+                  <button class="baii-btn num-btn" data-val="4">4</button>
+                  <button class="baii-btn num-btn" data-val="5">5</button>
+                  <button class="baii-btn num-btn" data-val="6">6</button>
+                  <button class="baii-btn action-btn" id="btn-minus">-</button>
+                  <button class="baii-btn action-btn" id="btn-plus">+</button>
+                </div>
+                <div class="keypad-row">
+                  <button class="baii-btn num-btn" data-val="1">1</button>
+                  <button class="baii-btn num-btn" data-val="2">2</button>
+                  <button class="baii-btn num-btn" data-val="3">3</button>
+                  <button class="baii-btn action-btn" id="btn-sign">+/-</button>
+                  <button class="baii-btn action-btn" id="btn-dot">.</button>
+                </div>
+                <div class="keypad-row">
+                  <button class="baii-btn num-btn" data-val="0" style="grid-column: span 3;">0</button>
+                  <button class="baii-btn baii-btn-action" id="btn-enter" style="grid-column: span 2;">ENTER =</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TVM STATE MONITOR -->
+        <div class="glass-card">
+          <div class="section-header">
+            <h2><i class="fa-solid fa-list-check"></i> Estado de la Hoja TVM</h2>
+            <p>Valores almacenados en memoria y guía de uso</p>
+          </div>
+
+          <div class="result-breakdown" style="font-size: 1rem; border-top: none;">
+            <div class="result-breakdown-row">
+              <span>Períodos de Capitalización (N):</span>
+              <span class="val" id="tvm-val-n">0.00</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Tasa Nominal Anual (I/Y):</span>
+              <span class="val" id="tvm-val-iy">0.00%</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Valor Presente (PV) [Salida = -]:</span>
+              <span class="val" id="tvm-val-pv">$0.00</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Pago Periódico (PMT):</span>
+              <span class="val" id="tvm-val-pmt">$0.00</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Valor Futuro (FV) [Entrada = +]:</span>
+              <span class="val" id="tvm-val-fv">$0.00</span>
+            </div>
+            <div class="result-breakdown-row">
+              <span>Frecuencia Anual (P/Y = C/Y):</span>
+              <span class="val" id="tvm-val-cy">1</span>
+            </div>
+          </div>
+
+          <div class="steps-container" style="margin-top: 24px;">
+            <div class="step-title"><i class="fa-solid fa-circle-info"></i> Instrucciones de Operación:</div>
+            <p style="font-size: 0.88rem; color: var(--text-muted); margin-top: 8px;">
+              1. Escriba un número en la calculadora y presione <strong>N, I/Y, PV o FV</strong> para guardar.<br>
+              2. Para calcular una incógnita: Presione <span style="color:#0284c7; font-weight:bold;">CPT</span> y luego la tecla deseada (ej. <span style="color:#3b82f6; font-weight:bold;">FV</span>).<br>
+              3. Para borrar memoria TVM: Presione <span style="color:#f59e0b; font-weight:bold;">2ND</span> y luego <span style="color:#3b82f6; font-weight:bold;">FV</span> (CLR TVM).
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 2: CALCULADORAS ESPECIALIZADAS -->
+    <div id="tab-solvers" class="tab-content">
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-subtab="sub-fv">Valor Futuro (VF)</button>
+        <button class="sub-tab" data-subtab="sub-pv">Valor Presente (VP)</button>
+        <button class="sub-tab" data-subtab="sub-rate">Tasa & ICONV</button>
+        <button class="sub-tab" data-subtab="sub-time">Períodos & Tiempo</button>
+        <button class="sub-tab" data-subtab="sub-dbd">Días entre Fechas (DBD)</button>
+      </div>
+
+      <!-- SUB-TAB 1: VALOR FUTURO -->
+      <div id="sub-fv" class="sub-tab-content active">
+        <div class="grid-2">
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Calculadora de Valor Futuro (VF)</h2>
+              <p>Fórmula: \(VF = VP \times (1 + i)^N\)</p>
+            </div>
+
+            <form id="form-fv">
+              <div class="form-group">
+                <label>Valor Presente (VP / Capital Inicial)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="fv-pv" class="form-control" placeholder="Ej: 25000" required>
+                  <span class="input-unit">$</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Tasa de Interés Nominal Anual (I/Y)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="fv-iy" class="form-control" placeholder="Ej: 6.9" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Frecuencia de Capitalización (C/Y)</label>
+                <select id="fv-cy" class="form-control">
+                  <option value="1">Anualmente (C/Y = 1)</option>
+                  <option value="2">Semestralmente (C/Y = 2)</option>
+                  <option value="4">Trimestralmente (C/Y = 4)</option>
+                  <option value="12" selected>Mensualmente (C/Y = 12)</option>
+                  <option value="365">Diariamente (C/Y = 365)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Plazo de Inversión / Préstamo (t en años)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="fv-years" class="form-control" placeholder="Ej: 5" required>
+                  <span class="input-unit">años</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-calculator"></i> Calcular Valor Futuro
+              </button>
+            </form>
+          </div>
+
+          <!-- RESULTADO VF -->
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Resultado del Cálculo</h2>
+            </div>
+
+            <div id="res-fv-card" class="result-card">
+              <div class="result-header">Valor Acumulado (VF)</div>
+              <div class="result-value" id="res-fv-val">$0.00</div>
+
+              <div class="result-breakdown">
+                <div class="result-breakdown-row">
+                  <span>Interés Compuesto Ganado (I):</span>
+                  <span class="val" id="res-fv-interest">$0.00</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Tasa Periódica (i):</span>
+                  <span class="val" id="res-fv-ipct">0.00%</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Número de Períodos (N):</span>
+                  <span class="val" id="res-fv-n">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="res-fv-steps" class="steps-container">
+              <div class="step-title">Pasos Matemática Financiera:</div>
+              <div id="fv-steps-content">Complete el formulario para ver la resolución paso a paso.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 2: VALOR PRESENTE -->
+      <div id="sub-pv" class="sub-tab-content" style="display:none;">
+        <div class="grid-2">
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Calculadora de Valor Presente / Descuento (VP)</h2>
+              <p>Fórmula: \(VP = \frac{VF}{(1 + i)^N}\)</p>
+            </div>
+
+            <form id="form-pv">
+              <div class="form-group">
+                <label>Valor Futuro Deseado (VF)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="pv-fv" class="form-control" placeholder="Ej: 197100" required>
+                  <span class="input-unit">$</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Tasa de Interés Nominal Anual (I/Y)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="pv-iy" class="form-control" placeholder="Ej: 4.16" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Frecuencia de Capitalización (C/Y)</label>
+                <select id="pv-cy" class="form-control">
+                  <option value="1">Anualmente (C/Y = 1)</option>
+                  <option value="2">Semestralmente (C/Y = 2)</option>
+                  <option value="4" selected>Trimestralmente (C/Y = 4)</option>
+                  <option value="12">Mensualmente (C/Y = 12)</option>
+                  <option value="365">Diariamente (C/Y = 365)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Plazo (t en años)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="pv-years" class="form-control" placeholder="Ej: 16" required>
+                  <span class="input-unit">años</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-calculator"></i> Calcular Valor Presente
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Resultado del Cálculo</h2>
+            </div>
+
+            <div id="res-pv-card" class="result-card">
+              <div class="result-header">Valor Presente Necesario (VP)</div>
+              <div class="result-value" id="res-pv-val">$0.00</div>
+
+              <div class="result-breakdown">
+                <div class="result-breakdown-row">
+                  <span>Monto de Descuento Compuesto:</span>
+                  <span class="val" id="res-pv-discount">$0.00</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Tasa Periódica (i):</span>
+                  <span class="val" id="res-pv-ipct">0.00%</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Número de Períodos (N):</span>
+                  <span class="val" id="res-pv-n">0</span>
+                </div>
+              </div>
+            </div>
+
+            <div id="res-pv-steps" class="steps-container">
+              <div class="step-title">Pasos Matemática Financiera:</div>
+              <div id="pv-steps-content">Complete el formulario para ver la resolución paso a paso.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 3: TASA DE INTERÉS Y CONVERSIÓN -->
+      <div id="sub-rate" class="sub-tab-content" style="display:none;">
+        <div class="grid-2">
+          <!-- CONVERSIÓN ICONV -->
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Conversión de Tasas (ICONV)</h2>
+              <p>Tasa Efectiva Anual (EFF) & Tasas Equivalentes</p>
+            </div>
+
+            <form id="form-iconv">
+              <div class="form-group">
+                <label>Tasa Nominal Anual Original (NOM1)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="iconv-nom" class="form-control" placeholder="Ej: 7.42" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Capitalización Original (C/Y 1)</label>
+                <select id="iconv-cy1" class="form-control">
+                  <option value="1">Anualmente (C/Y = 1)</option>
+                  <option value="2">Semestralmente (C/Y = 2)</option>
+                  <option value="4" selected>Trimestralmente (C/Y = 4)</option>
+                  <option value="12">Mensualmente (C/Y = 12)</option>
+                  <option value="365">Diariamente (C/Y = 365)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>Capitalización Deseada (C/Y 2)</label>
+                <select id="iconv-cy2" class="form-control">
+                  <option value="1">Anualmente (EFF)</option>
+                  <option value="2">Semestralmente (C/Y = 2)</option>
+                  <option value="4">Trimestralmente (C/Y = 4)</option>
+                  <option value="12" selected>Mensualmente (C/Y = 12)</option>
+                  <option value="365">Diariamente (C/Y = 365)</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-right-left"></i> Convertir Tasa
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Resultado de Conversión</h2>
+            </div>
+
+            <div id="res-iconv-card" class="result-card">
+              <div class="result-header">Tasa Efectiva Anual (EFF)</div>
+              <div class="result-value" id="res-iconv-eff">0.00%</div>
+
+              <div class="result-breakdown">
+                <div class="result-breakdown-row">
+                  <span>Tasa Nominal Equivalente (NOM 2):</span>
+                  <span class="val" id="res-iconv-nom2">0.00%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="steps-container">
+              <div class="step-title">Fórmulas Aplicadas:</div>
+              <div id="iconv-steps-content">
+                <div class="step-formula">EFF = (1 + NOM1 / C/Y1)^(C/Y1) - 1</div>
+                <div class="step-formula">NOM2 = C/Y2 * [(1 + EFF)^(1/C/Y2) - 1]</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 4: PERÍODOS Y TIEMPO -->
+      <div id="sub-time" class="sub-tab-content" style="display:none;">
+        <div class="grid-2">
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Cálculo de Períodos (N) y Tiempo (t)</h2>
+              <p>Fórmula: \(N = \frac{\ln(VF / VP)}{\ln(1 + i)}\)</p>
+            </div>
+
+            <form id="form-time">
+              <div class="form-group">
+                <label>Valor Presente (VP)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="time-pv" class="form-control" placeholder="Ej: 13000" required>
+                  <span class="input-unit">$</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Valor Futuro (VF)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="time-fv" class="form-control" placeholder="Ej: 28541.83" required>
+                  <span class="input-unit">$</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Tasa Nominal Anual (I/Y)</label>
+                <div class="input-wrapper">
+                  <input type="number" step="any" id="time-iy" class="form-control" placeholder="Ej: 7.97" required>
+                  <span class="input-unit">%</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Frecuencia de Capitalización (C/Y)</label>
+                <select id="time-cy" class="form-control">
+                  <option value="1">Anualmente (C/Y = 1)</option>
+                  <option value="2">Semestralmente (C/Y = 2)</option>
+                  <option value="4">Trimestralmente (C/Y = 4)</option>
+                  <option value="12" selected>Mensualmente (C/Y = 12)</option>
+                  <option value="365">Diariamente (C/Y = 365)</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-clock"></i> Calcular Tiempo
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Resultado del Tiempo</h2>
+            </div>
+
+            <div class="result-card">
+              <div class="result-header">Número de Períodos (N)</div>
+              <div class="result-value" id="res-time-n">0.00</div>
+
+              <div class="result-breakdown">
+                <div class="result-breakdown-row">
+                  <span>Plazo en Años Decimales:</span>
+                  <span class="val" id="res-time-years">0.00 años</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Desglose en Años y Meses:</span>
+                  <span class="val" id="res-time-ym">0 años y 0 meses</span>
+                </div>
+                <div class="result-breakdown-row">
+                  <span>Desglose en Años y Días:</span>
+                  <span class="val" id="res-time-yd">0 años y 0 días</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUB-TAB 5: DÍAS ENTRE FECHAS (DBD) -->
+      <div id="sub-dbd" class="sub-tab-content" style="display:none;">
+        <div class="grid-2">
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Días Entre Fechas (Hoja DATE / DBD)</h2>
+              <p>Cálculo exacto de días entre DT1 y DT2</p>
+            </div>
+
+            <form id="form-dbd">
+              <div class="form-group">
+                <label>Fecha Inicial (DT1)</label>
+                <input type="date" id="dbd-dt1" class="form-control" value="2020-06-30" required>
+              </div>
+
+              <div class="form-group">
+                <label>Fecha Final (DT2)</label>
+                <input type="date" id="dbd-dt2" class="form-control" value="2025-10-09" required>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fa-solid fa-calendar-days"></i> Calcular DBD
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-card">
+            <div class="section-header">
+              <h2>Resultado DBD</h2>
+            </div>
+
+            <div class="result-card">
+              <div class="result-header">Días Transcurridos (DBD)</div>
+              <div class="result-value" id="res-dbd-val">0 días</div>
+
+              <div class="result-breakdown">
+                <div class="result-breakdown-row">
+                  <span>Equivalente en Años (t = DBD / 365):</span>
+                  <span class="val" id="res-dbd-years">0.000000 años</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 3: COMPARADOR GRÁFICO (SIMPLE VS COMPUESTO) -->
+    <div id="tab-chart" class="tab-content">
+      <div class="glass-card">
+        <div class="section-header">
+          <h2><i class="fa-solid fa-chart-area"></i> Crecimiento del Dinero: Interés Simple vs Compuesto</h2>
+          <p>Comparación proyectada a 20 años para $1,000 al 10% anual (Figura 2.1.1 del Libro UNMSM)</p>
+        </div>
+
+        <div style="position: relative; height: 420px; width: 100%;">
+          <canvas id="growthChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- PESTAÑA 4: EJERCICIOS RESUELTOS UNMSM -->
+    <div id="tab-exercises" class="tab-content">
+      <div class="section-header">
+        <h2><i class="fa-solid fa-graduation-cap"></i> Ejercicios Académicos Resueltos (Rojas Nuñez Jefry Aldair)</h2>
+        <p>Seleccione cualquier ejercicio del material didáctico para ver su resolución e interactuar con sus datos.</p>
+      </div>
+
+      <div id="exercises-list">
+        <!-- Renderizado dinámico mediante JS -->
+      </div>
+    </div>
+
+    <!-- PESTAÑA 5: GLOSARIO Y FÓRMULAS -->
+    <div id="tab-glossary" class="tab-content">
+      <div class="section-header">
+        <h2><i class="fa-solid fa-book-bookmark"></i> Terminología y Glosario de Símbolos</h2>
+        <p>Glosario oficial de la Escuela Profesional de Matemática - UNMSM</p>
+      </div>
+
+      <div class="glossary-grid">
+        <div class="glossary-item">
+          <div class="glossary-symbol">I/Y (NOM)</div>
+          <div class="glossary-title">Tasa de Interés Nominal Anual</div>
+          <div class="glossary-desc">Tasa pactada o declarada anualmente en el contrato financiero antes de capitalizar.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">C/Y</div>
+          <div class="glossary-title">Frecuencia de Capitalización Anual</div>
+          <div class="glossary-desc">Número de veces que los intereses se suman al capital dentro de un año (ej. Mensual = 12).</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">i</div>
+          <div class="glossary-title">Tasa Periódica</div>
+          <div class="glossary-desc">Tasa efectiva aplicada en cada período de conversión: \(i = \frac{I/Y}{C/Y}\).</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">N</div>
+          <div class="glossary-title">Número de Períodos</div>
+          <div class="glossary-desc">Total de capitalizaciones en todo el plazo: \(N = C/Y \times t\).</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">PV (VP)</div>
+          <div class="glossary-title">Valor Presente / Capital</div>
+          <div class="glossary-desc">Monto inicial prestado o invertido. En la calculadora financiera se ingresa como negativo (-) para inversiones.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">FV (VF)</div>
+          <div class="glossary-title">Valor Futuro / Monto</div>
+          <div class="glossary-desc">Monto acumulado final incluyendo capital inicial e intereses acumulados.</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">EFF (TIE)</div>
+          <div class="glossary-title">Tasa de Interés Efectiva Anual</div>
+          <div class="glossary-desc">Tasa real ganada o pagada en un año con capitalización anual equivalente: \(EFF = (1+i)^{C/Y} - 1\).</div>
+        </div>
+        <div class="glossary-item">
+          <div class="glossary-symbol">DBD</div>
+          <div class="glossary-title">Días Entre Fechas (Days Between Dates)</div>
+          <div class="glossary-desc">Número exacto de días entre la fecha inicial (DT1) y fecha final (DT2). Plazo \(t = DBD / 365\).</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS DE LA APLICACIÓN -->
+  <script src="js/math.js"></script>
+  <script src="js/baiipro.js"></script>
+  <script src="js/exercises.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
